@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../shared/auth.service';
+import { SignupRequestPayload } from './signup-request.payload';
 
 @Component({
   selector: 'app-signup',
@@ -7,10 +9,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent implements OnInit {
+  signupRequestPayload: SignupRequestPayload;
+  signupForm: FormGroup;
 
-signupForm: FormGroup;
-
-  constructor() { }
+  constructor(private authService: AuthService) { 
+    this.signupRequestPayload = {
+      username: '',
+      email: '',
+      password: ''
+    };
+  }
 
   ngOnInit(): void {
     this.signupForm = new FormGroup({
@@ -18,6 +26,17 @@ signupForm: FormGroup;
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required)
     })
+  }
+
+  signup(){
+    this.signupRequestPayload.email = this.signupForm.get('email')?.value;
+    this.signupRequestPayload.username = this.signupForm.get('username')?.value;
+    this.signupRequestPayload.password = this.signupForm.get('password')?.value;
+
+    this.authService.signup(this.signupRequestPayload)
+      .subscribe(data => {
+        console.log(data);
+      });
   }
 
 }
