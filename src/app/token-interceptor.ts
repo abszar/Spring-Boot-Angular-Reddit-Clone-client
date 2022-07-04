@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { LocalStorageService } from "ngx-webstorage";
 import { BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError } from "rxjs";
 import { LoginResponse } from "./auth/login/login-response.payload";
 import { AuthService } from "./auth/shared/auth.service";
@@ -12,11 +13,11 @@ export class TokenInterceptor implements HttpInterceptor {
     isTokenRefreshing = false;
     refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject(null);
 
-    constructor(public authService: AuthService) { }
+    constructor(public authService: AuthService,
+        private localStorage: LocalStorageService) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler):
         Observable<HttpEvent<any>> {
-            console.log("hhhhhhhhhhxxxxxxxx");
 
             if (req.url.indexOf('refresh') !== -1 || req.url.indexOf('login') !== -1) {
                 return next.handle(req);
@@ -30,6 +31,8 @@ export class TokenInterceptor implements HttpInterceptor {
                         && error.status === 403) {
                         return this.handleAuthErrors(req, next);
                     } else {
+                        // this.localStorage.clear('authenticationToken');
+                        // this.localStorage.clear('expiresAt');
                         return throwError(error);
                     }
                 }));
