@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-vote-button',
   templateUrl: './vote-button.component.html',
-  styleUrls: ['./vote-button.component.css']
+  styleUrls: ['./vote-button.component.scss']
 })
 export class VoteButtonComponent implements OnInit {
 
@@ -54,7 +54,7 @@ export class VoteButtonComponent implements OnInit {
     this.voteService.vote(this.votePayload).subscribe(() => {
       this.updateVoteDetails();
     }, error => {
-      this.toastr.error(error.error.message);
+      this.toastr.error(error.message);
       throwError(error);
     });
   }
